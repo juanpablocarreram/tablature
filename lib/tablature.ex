@@ -17,7 +17,7 @@ defmodule Tablature do
   end)
 
   Enum.zip_reduce(lines,"",fn elements,accumulator ->
-  string = Enum.filter(elements, fn element -> element != "x" end) |> Enum.join(" ")
+  string = Enum.filter(elements, fn element -> element != "x" end) |> Enum.join("/")
   cond do
     accumulator == "" -> string
     string == "" -> accumulator
