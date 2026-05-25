@@ -8,21 +8,28 @@ defmodule Tablature do
     |> String.slice(2..-2 // 1)
     |> String.graphemes()
     |> Enum.map(fn char ->
-      if char == "-" do
-        "x"
-      else
-        prefix <> char
+      cond do
+        char == "-" -> "x"
+        char == "|" -> "o"
+        true -> prefix <> char
       end
     end)
   end)
 
-  Enum.zip_reduce(lines,"",fn elements,accumulator ->
+  Enum.zip_reduce(lines,["",0],fn elements, [accumulatorString, acummulatorBlanks] ->
   string = Enum.filter(elements, fn element -> element != "x" end) |> Enum.join("/")
   cond do
-    accumulator == "" -> string
-    string == "" -> accumulator
-    true -> accumulator <> " " <> string
+    string == "o/o/o/o/o/o" -> [accumulatorString, acummulatorBlanks]
+    acummulatorBlanks == 3 -> [accumulatorString <> " " <> "_ " <> string,0]
+    accumulatorString == "" ->
+    if string == "" do
+      [accumulatorString, acummulatorBlanks + 1]
+    else
+      [string, acummulatorBlanks]
+    end
+    string == "" -> [accumulatorString, acummulatorBlanks + 1]
+    true -> [accumulatorString <> " " <> string,0]
   end
-   end)
+   end) |> List.first()
 end
 end
